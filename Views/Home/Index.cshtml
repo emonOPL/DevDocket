@@ -1,0 +1,1058 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/4.3.0/css/fixedColumns.dataTables.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css" />
+
+
+<div>
+
+    <div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 1100">
+        <div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true"
+             data-bs-autohide="true" data-bs-delay="3000">
+            <div class="d-flex">
+                <div id="toastBody" class="toast-body">
+                    
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="updateModal" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="modalBody" class="modal-body">
+                    <p>Modal body text goes here.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="updateBtn" type="button" class="btn btn-primary">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="taskInfo" class="border border-info rounded-3 p-3 mb-3">
+        <h2 class="text-center text-info">Add Task Info</h2>
+        <form id="infoForm" action="" method="post">
+            <div class="row mb-3">
+                <label for="title" class="col-sm-2 col-form-label">Title</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="title">
+                    <small id="titleValidation" class="text-danger"></small>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="details" class="col-sm-2 col-form-label">Details</label>
+                <div class="col-sm-10">
+                    <textarea class="form-control" id="details"></textarea>
+                    <small id="detailsValidation" class="text-danger"></small>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="techTag" class="col-sm-2 col-form-label">TechTag</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="techTag">
+                    <small id="techTagValidation" class="text-danger"></small>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="priority" class="col-sm-2 col-form-label">Priority</label>
+                <div class="col-sm-10">
+                    <select class="form-control form-select" aria-label="Default select example" id="priority">
+                        <option value="0" selected>Select Priority</option>
+                        <option value="1">Low</option>
+                        <option value="2">Medium</option>
+                        <option value="3">High</option>
+                        <option value="4">Urgent</option>
+                    </select>
+                    <small id="priorityValidation" class="text-danger"></small>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="deadline" class="col-sm-2 col-form-label">Deadline</label>
+                <div class="col-sm-10">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="deadline" name="Deadline">
+                        <span class="input-group-text">
+                            <i class="fa fa-calendar"></i>
+                        </span>
+                    </div>
+                    <small id="deadlineValidation" class="text-danger"></small>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="status" class="col-sm-2 col-form-label">Status</label>
+                <div class="col-sm-10">
+                    <select class="form-control form-select" aria-label="Default select example" id="status">
+                        <option value="0" selected>Select Status</option>
+                        <option value="1">Assigned</option>
+                        <option value="2">Ongoing</option>
+                        <option value="3">Completed</option>
+                    </select>
+                    <small id="statusValidation" class="text-danger"></small>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10 d-flex justify-content-between align-items-center">
+                    <input type="submit" value="Submit" class="btn btn-outline-secondary"/>
+                    <input type="reset" value="Reset" class="btn btn-outline-warning"/>
+                    <div id="closeTask" class="btn btn-outline-danger">Close</div>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <button id="addTask" class="btn btn-outline-primary mb-3">Add Task</button>
+    
+    <div class="table-responsive rounded">
+        <table id="taskTable" class="table table-striped table-responsive table-hover table-primary text-center display nowrap w-100 table-borderless">
+            <thead>
+                <tr>
+                    <th class="text-center">Title</th>
+                    <th class="w-auto text-center">Details</th>
+                    <th class="text-center">TechTag</th>
+                    <th class="text-center">Priority</th>
+                    <th class="text-center">Deadline</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+
+
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/js/all.min.js" integrity="sha512-b+nQTCdtTBIRIbraqNEwsjB6UvL3UEMkXnhzd8awtCYh0Kcsjl9uEgwVFVbhoj3uu1DO1ZMacNvLoyJJiNfcvg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.flash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/fixedcolumns/4.3.0/js/dataTables.fixedColumns.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+
+
+    <script>
+
+        let dataTable;
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0'); 
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function getPriorityLabel(priority) {
+            switch (priority) {
+                case 1: return 'Low';
+                case 2: return 'Medium';
+                case 3: return 'High';
+                case 4: return 'Urgent';
+                default: return 'Unknown';
+            }
+        }
+
+        function getStatusLabel(status) {
+            switch (status) {
+                case 1: return 'Assigned';
+                case 2: return 'Ongoing';
+                case 3: return 'Completed';
+                default: return 'Unknown';
+            }
+        }
+
+        function loadTasks() {
+            $.ajax({
+                url: '/Home/GetTask',
+                type: 'GET',
+                success: function (response) {
+                    if ($.fn.dataTable.isDataTable('#taskTable')) {
+                        dataTable.clear().destroy(); // Destroy previous instance
+                    }
+
+                    const tbody = $('#taskTable tbody');
+                    tbody.empty(); 
+
+                    if (response.length === 0) {
+                        tbody.append('<tr><td colspan="7" class="text-center">No tasks found</td></tr>');
+                        return;
+                    }
+
+                    $.each(response, function (index, task) {
+                        const row = `
+                            <tr data-id="${task.id}">
+                                <td>${task.title}</td>
+                                <td>${task.details}</td>
+                                <td>${task.techTag}</td>
+                                <td data-order="${task.priority}">${getPriorityLabel(task.priority)}</td>
+                                <td>${formatDate(task.deadline)}</td>
+                                <td data-order="${task.status}">${getStatusLabel(task.status)}</td>
+                                <td>
+                                    <button id="edit${task.id}" class="btn btn-sm btn-primary"><i class="fa-regular fa-pen-to-square"></i></button>
+                                    <button id="delete${task.id}" class="btn btn-sm btn-danger"><i class="fa-regular fa-trash-can"></i></button>
+                                </td>
+                            </tr>`;
+                        tbody.append(row);
+                    });
+                    dataTable = $('#taskTable').DataTable({
+                        scrollX: true,
+                        scrollY: "60vh",
+                        paging: true,
+                        fixedColumns: {
+                            right: 1,
+                            left: 0
+                        },
+                        columnDefs: [
+                          {
+                            targets: 1,
+                            orderable: false,
+                            className: 'text-start'
+                          }
+                        ],
+                        columnDefs: [
+                          {
+                            targets: 6,
+                            orderable: false
+                          }
+                        ],
+                        order: [
+                          [4, 'asc'],
+                          [3, 'desc'],
+                          [5, 'asc']
+                        ],
+                        dom: 'Bfrtip',
+                        buttons: [
+                          'copy', 'csv', 'excel', 'pdf', 'print'
+                        ],
+                        pageLength: 100
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Failed to load tasks:", error);
+                }
+            });
+        }
+
+
+        $(document).ready(function () {
+
+            loadTasks();
+            $('#taskInfo').hide();
+
+            $('#taskTable').on('click', 'button[id^="delete"]', function () {
+                const taskId = $(this).closest('tr').data('id');
+
+                if (confirm("Click on 'OK' to delete this task?")) {
+                    $.ajax({
+                        url: '/Home/DeleteTask',
+                        type: 'POST',
+                        data: { taskId: taskId },
+                        success: function (response) {
+                            if (response.success) {
+                                $('#toastBody').text(`✅ ${response.message}`);
+                                $('#successToast')
+                                    .removeClass('text-bg-danger')
+                                    .addClass('text-bg-success');
+                                const toastElement = document.getElementById('successToast');
+                                const toast = new bootstrap.Toast(toastElement);
+                                toast.show();
+                                loadTasks(); 
+                            } else {
+                                $('#toastBody').text(`❌ ${response.message}`);
+                                $('#successToast')
+                                    .addClass('text-bg-danger')
+                                    .removeClass('text-bg-success');
+                                const toastElement = document.getElementById('successToast');
+                                const toast = new bootstrap.Toast(toastElement);
+                                toast.show();
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            $('#toastBody').text(`❌ Error deleting task: ${error}`);
+                            $('#successToast')
+                                .removeClass('text-bg-danger')
+                                .addClass('text-bg-success');
+                            const toastElement = document.getElementById('successToast');
+                            const toast = new bootstrap.Toast(toastElement);
+                            toast.show();
+                        }
+                    });
+                }
+                $(this).closest('tr').remove();
+            });
+
+            $('#taskTable').on('click', 'button[id^="edit"]', function () {
+                const taskId = $(this).closest('tr').data('id');
+
+                $.ajax({
+                    url: '/Home/GetSingleTask?taskId=' + taskId,
+                    type: 'GET',
+                    success: function (response) {
+                        const modalContent = `
+                            <form id="editModalForm" action="" method="post">
+                                <div class="row mb-3">
+                                    <label for="editTitle" class="col-sm-2 col-form-label">Title</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="editTitle" value="${response.title}">
+                                        <small id="editTitleValidation" class="text-danger"></small>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="editDetails" class="col-sm-2 col-form-label">Details</label>
+                                    <div class="col-sm-10">
+                                        <textarea class="form-control" id="editDetails">${response.details}</textarea>
+                                        <small id="editDetailsValidation" class="text-danger"></small>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="editTechTag" class="col-sm-2 col-form-label">TechTag</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="editTechTag" value="${response.techTag}">
+                                        <small id="editTechTagValidation" class="text-danger"></small>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="editPriority" class="col-sm-2 col-form-label">Priority</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control form-select" aria-label="Default select example" id="editPriority">
+                                            <option value="0"${response.priority == 0 ? ' selected' : ''}>Select Priority</option>
+                                            <option value="1"${response.priority == 1 ? ' selected' : ''}>Low</option>
+                                            <option value="2"${response.priority == 2 ? ' selected' : ''}>Medium</option>
+                                            <option value="3"${response.priority == 3 ? ' selected' : ''}>High</option>
+                                            <option value="4"${response.priority == 4 ? ' selected' : ''}>Urgent</option>
+                                        </select>
+                                        <small id="editPriorityValidation" class="text-danger"></small>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="editDeadline" class="col-sm-2 col-form-label">Deadline</label>
+                                    <div class="col-sm-10">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="editDeadline" name="EditDeadline" value="${formatDate(response.deadline)}">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                        <small id="editDeadlineValidation" class="text-danger"></small>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="editStatus" class="col-sm-2 col-form-label">Status</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control form-select" aria-label="Default select example" id="editStatus">
+                                            <option value="0"${response.status == 0 ? ' selected' : ''}>Select Status</option>
+                                            <option value="1"${response.status == 1 ? ' selected' : ''}>Assigned</option>
+                                            <option value="2"${response.status == 2 ? ' selected' : ''}>Ongoing</option>
+                                            <option value="3"${response.status == 3 ? ' selected' : ''}>Completed</option>
+                                        </select>
+                                        <small id="editStatusValidation" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </form>
+                        `
+                        $('#modalBody').html(modalContent);
+
+                        $("#editDeadline").datepicker({
+                            todayBtn: "false",
+                            autoclose: true,
+                            format: "yyyy-mm-dd",
+                            startDate: new Date(),
+                            startView: 0,
+                            minViewMode: 0,
+                            maxViewMode: 2,
+                        });
+
+                        $('#editTitle').on('keyup', function(){
+                            const titleValue = $(this).val().trim();
+                            if(titleValue === "" || titleValue.length > 50){
+                                $("label[for='editTitle']").addClass('text-danger');
+                                $(this).removeClass('border-success');
+                                $(this).addClass('border-danger');
+                                $('#editTitleValidation').removeClass('text-success');
+                                $('#editTitleValidation').addClass('text-danger');
+                            }
+                            else{
+                                $("label[for='title']").removeClass('text-danger');
+                                $(this).removeClass('border-danger');
+                                $(this).addClass('border-success');
+                                $('#editTitleValidation').removeClass('text-danger');
+                                $('#editTitleValidation').addClass('text-success');
+                            }
+                            $('#editTitleValidation').text(titleValue.length + '/50');
+                        });
+
+                        $('#editDetails').on('keyup', function(){
+                            const detailsValue = $(this).val().trim();
+                            if(detailsValue === "" || detailsValue.length < 20){
+                                $("label[for='editDetails']").addClass('text-danger');
+                                $(this).removeClass('border-success');
+                                $(this).addClass('border-danger');
+                                $('#editDetailsValidation').removeClass('text-success');
+                                $('#editDetailsValidation').addClass('text-danger');
+                            }
+                            else{
+                                $("label[for='editDetails']").removeClass('text-danger');
+                                $(this).removeClass('border-danger');
+                                $(this).addClass('border-success');
+                                $('#editDetailsValidation').removeClass('text-danger');
+                                $('#editDetailsValidation').addClass('text-success');
+                            }
+                            $('#editDetailsValidation').text(detailsValue.length + ' characters');
+                        });
+
+                        $('#editTechTag').on('keyup', function(){
+                            const techTagValue = $(this).val().trim();
+                            if(techTagValue === "" || techTagValue.length > 20){
+                                $("label[for='editTechTag']").addClass('text-danger');
+                                $(this).removeClass('border-success');
+                                $(this).addClass('border-danger');
+                                $('#editTechTagValidation').removeClass('text-success');
+                                $('#editTechTagValidation').addClass('text-danger');
+                            }
+                            else{
+                                $("label[for='editTechTag']").removeClass('text-danger');
+                                $(this).removeClass('border-danger');
+                                $(this).addClass('border-success');
+                                $('#editTechTagValidation').removeClass('text-danger');
+                                $('#editTechTagValidation').addClass('text-success');
+                            }
+                            $('#editTechTagValidation').text(techTagValue.length + '/20');
+                        });
+
+                        $('#editPriority').on('change', function(){
+                            const priorityValue = $(this).val();
+                            if(priorityValue == 0){
+                                $("label[for='editPriority']").addClass('text-danger');
+                                $(this).removeClass('border-success');
+                                $(this).addClass('border-danger');
+                                $('#editPriorityValidation').removeClass('text-success');
+                                $('#editPriorityValidation').addClass('text-danger');
+                            }
+                            else{
+                                $("label[for='editPriority']").removeClass('text-danger');
+                                $(this).removeClass('border-danger');
+                                $(this).addClass('border-success');
+                                $('#editPriorityValidation').removeClass('text-danger');
+                                $('#editPriorityValidation').addClass('text-success');
+                            }
+                            $('#editPriorityValidation').text($('#priority option[value="' + priorityValue + '"]').text());
+                        });
+
+                        $('#editDeadline').on('change', function(){
+                            const deadlineValue = $(this).val();
+                            if(deadlineValue == 0){
+                                $("label[for='editDeadline']").addClass('text-danger');
+                                $(this).removeClass('border-success');
+                                $(this).addClass('border-danger');
+                                $('#editDeadlineValidation').removeClass('text-success');
+                                $('#editDeadlineValidation').addClass('text-danger');
+                            }
+                            else{
+                                $("label[for='editDeadline']").removeClass('text-danger');
+                                $(this).removeClass('border-danger');
+                                $(this).addClass('border-success');
+                                $('#editDeadlineValidation').removeClass('text-danger');
+                                $('#editDeadlineValidation').addClass('text-success');
+                            }
+                            $('#editDeadlineValidation').text(deadlineValue);
+                        });
+
+                        $('#editStatus').on('change', function(){
+                            const statusValue = $(this).val();
+                            if(statusValue == 0){
+                                $("label[for='editStatus']").addClass('text-danger');
+                                $(this).removeClass('border-success');
+                                $(this).addClass('border-danger');
+                                $('#editStatusValidation').removeClass('text-success');
+                                $('#editStatusValidation').addClass('text-danger');
+                            }
+                            else{
+                                $("label[for='status']").removeClass('text-danger');
+                                $(this).removeClass('border-danger');
+                                $(this).addClass('border-success');
+                                $('#editStatusValidation').removeClass('text-danger');
+                                $('#editStatusValidation').addClass('text-success');
+                            }
+                            $('#editStatusValidation').text($('#status option[value="' + statusValue + '"]').text());
+                        });
+
+                         $('#updateBtn').click(function(){
+                            const title = $('#editTitle').val().trim();
+                            const details = $('#editDetails').val().trim();
+                            const techTag = $('#editTechTag').val().trim();
+                            const priority = $('#editPriority').val();
+                            const deadline = $('#editDeadline').val();
+                            const status = $('#editStatus').val();
+
+                            let isValid = true;
+
+                            if(title===""){
+                                $("label[for='editTitle']").addClass('text-danger');
+                                $('#editTitle').removeClass('border-success');
+                                $('#editTitle').addClass('border-danger');
+                                $('#editTitleValidation').text("Please add a title for the task.");
+                                $('#editTitleValidation').removeClass('text-success');
+                                $('#editTitleValidation').addClass('text-danger');
+                                isValid = false;
+                            }
+                            else if(title.length > 50){
+                                $("label[for='editTitle']").addClass('text-danger');
+                                $('#editTitle').removeClass('border-success');
+                                $('#editTitle').addClass('border-danger');
+                                $('#editTitleValidation').text("Title can be long up to 50 characters.");
+                                $('#editTitleValidation').removeClass('text-success');
+                                $('#editTitleValidation').addClass('text-danger');
+                                isValid = false;
+                            }
+                            else{
+                                $("label[for='editTitle']").removeClass('text-danger');
+                                $('#editTitle').removeClass('border-danger');
+                                $('#editTitle').addClass('border-success');
+                                $('#editTitleValidation').text("");
+                                $('#editTitleValidation').addClass('text-success');
+                                $('#editTitleValidation').removeClass('text-danger');
+                            }
+
+                            if(details===""){
+                                $("label[for='editDetails']").addClass('text-danger');
+                                $('#editDetails').removeClass('border-success');
+                                $('#editDetails').addClass('border-danger');
+                                $('#editDetailsValidation').text("Please add details for the task.");
+                                $('#editDetailsValidation').removeClass('text-success');
+                                $('#editDetailsValidation').addClass('text-danger');
+                                isValid = false;
+                            }
+                            else if(details.length < 20){
+                                $("label[for='editDetails']").addClass('text-danger');
+                                $('#editDetails').removeClass('border-success');
+                                $('#editDetails').addClass('border-danger');
+                                $('#editDetailsValidation').text("Details can not be smaller than 20 characters.");
+                                $('#editDetailsValidation').removeClass('text-success');
+                                $('#editDetailsValidation').addClass('text-danger');
+                                isValid = false;
+                            }
+                            else{
+                                $("label[for='editDetails']").removeClass('text-danger');
+                                $('#editDetails').removeClass('border-danger');
+                                $('#editDetails').addClass('border-success');
+                                $('#editDetailsValidation').text("");
+                                $('#editDetailsValidation').addClass('text-success');
+                                $('#editDetailsValidation').removeClass('text-danger');
+                            }
+
+                            if(techTag===""){
+                                $("label[for='editTechTag']").addClass('text-danger');
+                                $('#editTechTag').removeClass('border-success');
+                                $('#editTechTag').addClass('border-danger');
+                                $('#editTechTagValidation').text("Please add a TechTag (Backend/Frontend/Database/Technology Used).");
+                                $('#editTechTagValidation').removeClass('text-success');
+                                $('#editTechTagValidation').addClass('text-danger');
+                                isValid = false;
+                            }
+                            else if(techTag.length > 20){
+                                $("label[for='editTechTag']").addClass('text-danger');
+                                $('#editTechTag').removeClass('border-success');
+                                $('#editTechTag').addClass('border-danger');
+                                $('#editTechTagValidation').text("TechTag can not be larger than 20 characters.");
+                                $('#editTechTagValidation').removeClass('text-success');
+                                $('#editTechTagValidation').addClass('text-danger');
+                                isValid = false;
+                            }
+                            else{
+                                $("label[for='editTechTag']").removeClass('text-danger');
+                                $('#editTechTag').removeClass('border-danger');
+                                $('#editTechTag').addClass('border-success');
+                                $('#editTechTagValidation').text("");
+                                $('#editTechTagValidation').addClass('text-success');
+                                $('#editTechTagValidation').removeClass('text-danger');
+                            }
+
+                            if(priority==0){
+                                $("label[for='editPriority']").addClass('text-danger');
+                                $('#editPriority').removeClass('border-success');
+                                $('#editPriority').addClass('border-danger');
+                                $('#editPriorityValidation').text("Please select the priority.");
+                                $('#editPriorityValidation').removeClass('text-success');
+                                $('#editPriorityValidation').addClass('text-danger');
+                                isValid = false;
+                            }
+                            else{
+                                $("label[for='editPriority']").removeClass('text-danger');
+                                $('#editPriority').removeClass('border-danger');
+                                $('#editPriority').addClass('border-success');
+                                $('#editPriorityValidation').text("");
+                                $('#editPriorityValidation').addClass('text-success');
+                                $('#editPriorityValidation').removeClass('text-danger');
+                            }
+
+                            if(deadline===""){
+                                $("label[for='editDeadline']").addClass('text-danger');
+                                $('#editDeadline').removeClass('border-success');
+                                $('#editDeadline').addClass('border-danger');
+                                $('#editDeadlineValidation').text("Please enter a deadline.");
+                                $('#editDeadlineValidation').removeClass('text-success');
+                                $('#editDeadlineValidation').addClass('text-danger');
+                                isValid = false;
+                            }
+                            else{
+                                $("label[for='editDeadline']").removeClass('text-danger');
+                                $('#editDeadline').removeClass('border-danger');
+                                $('#editDeadline').addClass('border-success');
+                                $('#editDeadlineValidation').text("");
+                                $('#editDeadlineValidation').addClass('text-success');
+                                $('#editDeadlineValidation').removeClass('text-danger');
+                            }
+
+                            if(status==0){
+                                $("label[for='editStatus']").addClass('text-danger');
+                                $('#editStatus').removeClass('border-success');
+                                $('#editStatus').addClass('border-danger');
+                                $('#editStatusValidation').text("Please select the Status.");
+                                $('#editStatusValidation').removeClass('text-success');
+                                $('#editStatusValidation').addClass('text-danger');
+                                isValid = false;
+                            }
+                            else{
+                                $("label[for='editStatus']").removeClass('text-danger');
+                                $('#editStatus').removeClass('border-danger');
+                                $('#editStatus').addClass('border-success');
+                                $('#editStatusValidation').text("");
+                                $('#editStatusValidation').addClass('text-success');
+                                $('#editStatusValidation').removeClass('text-danger');
+                            }
+
+                            if(!isValid){
+                                return;
+                            }
+
+                            $.ajax({
+                                url: '/Home/UpdateTask',
+                                type: 'POST',
+                                data: {
+                                    id: taskId,
+                                    title: title,
+                                    details: details,
+                                    techTag: techTag,
+                                    priority: priority,
+                                    deadline: deadline,
+                                    status: status
+                                },
+                                success: function (response){
+                                    // console.log(response);
+                                    // $('#title').val("");
+                                    // $('#details').val("");
+                                    // $('#techTag').val("");
+                                    // $('#priority').val("0");
+                                    // $('#deadline').val("");
+                                    // $('#status').val("0");
+
+                                    $('#updateModal').modal('hide');
+                                   
+                                    $('#editTitle, #editDetails, #editTechTag, #editPriority, #editDeadline, #editStatus').removeClass('border-success border-danger');
+
+                                    $('#toastBody').text("✅ Task updated successfully!");
+
+                                    $('#successToast')
+                                        .removeClass('text-bg-danger')
+                                        .addClass('text-bg-success');
+
+                                    const toastElement = document.getElementById('successToast');
+                                    const toast = new bootstrap.Toast(toastElement);
+                                    toast.show();
+                                    
+                                    loadTasks();
+                                },
+                                error: function (xhr, status, error){
+                                    $('#toastBody').text("❌ Something went wrong!");
+
+                                    $('#successToast')
+                                        .addClass('text-bg-danger')
+                                        .removeClass('text-bg-success');
+
+                                    const toastElement = document.getElementById('successToast');
+                                    const toast = new bootstrap.Toast(toastElement);
+                                    toast.show();
+                                }
+                            });
+                        });
+
+                        const modal = new bootstrap.Modal(document.getElementById('updateModal'));
+                        modal.show();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error fetching task:', error);
+                    }
+                });
+
+            });
+
+
+            $('#addTask').click(function(){
+                $('#taskInfo').show();
+                $(this).hide();
+
+                $("#deadline").datepicker({
+                    todayBtn: "false",
+                    autoclose: true,
+                    format: "yyyy-mm-dd",
+                    startDate: new Date(),
+                    startView: 0,
+                    minViewMode: 0, 
+                    maxViewMode: 2,
+                });
+            });
+
+            $('#title').on('keyup', function(){
+                const titleValue = $(this).val().trim();
+                if(titleValue === "" || titleValue.length > 50){
+                    $("label[for='title']").addClass('text-danger');
+                    $(this).removeClass('border-success');
+                    $(this).addClass('border-danger');
+                    $('#titleValidation').removeClass('text-success');
+                    $('#titleValidation').addClass('text-danger');
+                }
+                else{
+                    $("label[for='title']").removeClass('text-danger');
+                    $(this).removeClass('border-danger');
+                    $(this).addClass('border-success');
+                    $('#titleValidation').removeClass('text-danger');
+                    $('#titleValidation').addClass('text-success');
+                }
+                $('#titleValidation').text(titleValue.length + '/50');
+            });
+
+            $('#details').on('keyup', function(){
+                const detailsValue = $(this).val().trim();
+                if(detailsValue === "" || detailsValue.length < 20){
+                    $("label[for='details']").addClass('text-danger');
+                    $(this).removeClass('border-success');
+                    $(this).addClass('border-danger');
+                    $('#detailsValidation').removeClass('text-success');
+                    $('#detailsValidation').addClass('text-danger');
+                }
+                else{
+                    $("label[for='details']").removeClass('text-danger');
+                    $(this).removeClass('border-danger');
+                    $(this).addClass('border-success');
+                    $('#detailsValidation').removeClass('text-danger');
+                    $('#detailsValidation').addClass('text-success');
+                }
+                $('#detailsValidation').text(detailsValue.length + ' characters');
+            });
+
+            $('#techTag').on('keyup', function(){
+                const techTagValue = $(this).val().trim();
+                if(techTagValue === "" || techTagValue.length > 20){
+                    $("label[for='techTag']").addClass('text-danger');
+                    $(this).removeClass('border-success');
+                    $(this).addClass('border-danger');
+                    $('#techTagValidation').removeClass('text-success');
+                    $('#techTagValidation').addClass('text-danger');
+                }
+                else{
+                    $("label[for='techTag']").removeClass('text-danger');
+                    $(this).removeClass('border-danger');
+                    $(this).addClass('border-success');
+                    $('#techTagValidation').removeClass('text-danger');
+                    $('#techTagValidation').addClass('text-success');
+                }
+                $('#techTagValidation').text(techTagValue.length + '/20');
+            });
+
+            $('#priority').on('change', function(){
+                const priorityValue = $(this).val();
+                if(priorityValue == 0){
+                    $("label[for='priority']").addClass('text-danger');
+                    $(this).removeClass('border-success');
+                    $(this).addClass('border-danger');
+                    $('#priorityValidation').removeClass('text-success');
+                    $('#priorityValidation').addClass('text-danger');
+                }
+                else{
+                    $("label[for='priority']").removeClass('text-danger');
+                    $(this).removeClass('border-danger');
+                    $(this).addClass('border-success');
+                    $('#priorityValidation').removeClass('text-danger');
+                    $('#priorityValidation').addClass('text-success');
+                }
+                $('#priorityValidation').text($('#priority option[value="' + priorityValue + '"]').text());
+            });
+            
+            $('#deadline').on('change', function(){
+                const deadlineValue = $(this).val();
+                if(deadlineValue == 0){
+                    $("label[for='deadline']").addClass('text-danger');
+                    $(this).removeClass('border-success');
+                    $(this).addClass('border-danger');
+                    $('#deadlineValidation').removeClass('text-success');
+                    $('#deadlineValidation').addClass('text-danger');
+                }
+                else{
+                    $("label[for='deadline']").removeClass('text-danger');
+                    $(this).removeClass('border-danger');
+                    $(this).addClass('border-success');
+                    $('#deadlineValidation').removeClass('text-danger');
+                    $('#deadlineValidation').addClass('text-success');
+                }
+                $('#deadlineValidation').text(deadlineValue);
+            });
+           
+            $('#status').on('change', function(){
+                const statusValue = $(this).val();
+                if(statusValue == 0){
+                    $("label[for='status']").addClass('text-danger');
+                    $(this).removeClass('border-success');
+                    $(this).addClass('border-danger');
+                    $('#statusValidation').removeClass('text-success');
+                    $('#statusValidation').addClass('text-danger');
+                }
+                else{
+                    $("label[for='status']").removeClass('text-danger');
+                    $(this).removeClass('border-danger');
+                    $(this).addClass('border-success');
+                    $('#statusValidation').removeClass('text-danger');
+                    $('#statusValidation').addClass('text-success');
+                }
+                $('#statusValidation').text($('#status option[value="' + statusValue + '"]').text());
+            });
+
+            $('#infoForm').submit(function(e){
+                e.preventDefault();
+
+                const title = $('#title').val().trim();
+                const details = $('#details').val().trim();
+                const techTag = $('#techTag').val().trim();
+                const priority = $('#priority').val();
+                const deadline = $('#deadline').val();
+                const status = $('#status').val();
+
+                let isValid = true;
+
+                if(title===""){
+                    $("label[for='title']").addClass('text-danger');
+                    $('#title').removeClass('border-success');
+                    $('#title').addClass('border-danger');
+                    $('#titleValidation').text("Please add a title for the task.");
+                    $('#titleValidation').removeClass('text-success');
+                    $('#titleValidation').addClass('text-danger');
+                    isValid = false;
+                }
+                else if(title.length > 50){
+                    $("label[for='title']").addClass('text-danger');
+                    $('#title').removeClass('border-success');
+                    $('#title').addClass('border-danger');
+                    $('#titleValidation').text("Title can be long up to 50 characters.");
+                    $('#titleValidation').removeClass('text-success');
+                    $('#titleValidation').addClass('text-danger');
+                    isValid = false;
+                }
+                else{
+                    $("label[for='title']").removeClass('text-danger');
+                    $('#title').removeClass('border-danger');
+                    $('#title').addClass('border-success');
+                    $('#titleValidation').text("");
+                    $('#titleValidation').addClass('text-success');
+                    $('#titleValidation').removeClass('text-danger');
+                }
+
+                if(details===""){
+                    $("label[for='details']").addClass('text-danger');
+                    $('#details').removeClass('border-success');
+                    $('#details').addClass('border-danger');
+                    $('#detailsValidation').text("Please add details for the task.");
+                    $('#detailsValidation').removeClass('text-success');
+                    $('#detailsValidation').addClass('text-danger');
+                    isValid = false;
+                }
+                else if(details.length < 20){
+                    $("label[for='details']").addClass('text-danger');
+                    $('#details').removeClass('border-success');
+                    $('#details').addClass('border-danger');
+                    $('#detailsValidation').text("Details can not be smaller than 20 characters.");
+                    $('#detailsValidation').removeClass('text-success');
+                    $('#detailsValidation').addClass('text-danger');
+                    isValid = false;
+                }
+                else{
+                    $("label[for='details']").removeClass('text-danger');
+                    $('#details').removeClass('border-danger');
+                    $('#details').addClass('border-success');
+                    $('#detailsValidation').text("");
+                    $('#detailsValidation').addClass('text-success');
+                    $('#detailsValidation').removeClass('text-danger');
+                }
+
+                if(techTag===""){
+                    $("label[for='techTag']").addClass('text-danger');
+                    $('#techTag').removeClass('border-success');
+                    $('#techTag').addClass('border-danger');
+                    $('#techTagValidation').text("Please add a TechTag (Backend/Frontend/Database/Technology Used).");
+                    $('#techTagValidation').removeClass('text-success');
+                    $('#techTagValidation').addClass('text-danger');
+                    isValid = false;
+                }
+                else if(techTag.length > 20){
+                    $("label[for='techTag']").addClass('text-danger');
+                    $('#techTag').removeClass('border-success');
+                    $('#techTag').addClass('border-danger');
+                    $('#techTagValidation').text("TechTag can not be larger than 20 characters.");
+                    $('#techTagValidation').removeClass('text-success');
+                    $('#techTagValidation').addClass('text-danger');
+                    isValid = false;
+                }
+                else{
+                    $("label[for='techTag']").removeClass('text-danger');
+                    $('#techTag').removeClass('border-danger');
+                    $('#techTag').addClass('border-success');
+                    $('#techTagValidation').text("");
+                    $('#techTagValidation').addClass('text-success');
+                    $('#techTagValidation').removeClass('text-danger');
+                }
+
+                if(priority==0){
+                    $("label[for='priority']").addClass('text-danger');
+                    $('#priority').removeClass('border-success');
+                    $('#priority').addClass('border-danger');
+                    $('#priorityValidation').text("Please select the priority.");
+                    $('#priorityValidation').removeClass('text-success');
+                    $('#priorityValidation').addClass('text-danger');
+                    isValid = false;
+                }
+                else{
+                    $("label[for='priority']").removeClass('text-danger');
+                    $('#priority').removeClass('border-danger');
+                    $('#priority').addClass('border-success');
+                    $('#priorityValidation').text("");
+                    $('#priorityValidation').addClass('text-success');
+                    $('#priorityValidation').removeClass('text-danger');
+                }
+               
+                if(deadline===""){
+                    $("label[for='deadline']").addClass('text-danger');
+                    $('#deadline').removeClass('border-success');
+                    $('#deadline').addClass('border-danger');
+                    $('#deadlineValidation').text("Please enter a deadline.");
+                    $('#deadlineValidation').removeClass('text-success');
+                    $('#deadlineValidation').addClass('text-danger');
+                    isValid = false;
+                }
+                else{
+                    $("label[for='deadline']").removeClass('text-danger');
+                    $('#deadline').removeClass('border-danger');
+                    $('#deadline').addClass('border-success');
+                    $('#deadlineValidation').text("");
+                    $('#deadlineValidation').addClass('text-success');
+                    $('#deadlineValidation').removeClass('text-danger');
+                }
+
+                if(status==0){
+                    $("label[for='status']").addClass('text-danger');
+                    $('#status').removeClass('border-success');
+                    $('#status').addClass('border-danger');
+                    $('#statusValidation').text("Please select the Status.");
+                    $('#statusValidation').removeClass('text-success');
+                    $('#statusValidation').addClass('text-danger');
+                    isValid = false;
+                }
+                else{
+                    $("label[for='status']").removeClass('text-danger');
+                    $('#status').removeClass('border-danger');
+                    $('#status').addClass('border-success');
+                    $('#statusValidation').text("");
+                    $('#statusValidation').addClass('text-success');
+                    $('#statusValidation').removeClass('text-danger');
+                }
+               
+                if(!isValid){
+                    return;
+                }
+                
+                $.ajax({
+                    url: '/Home/AddTask',
+                    type: 'POST',
+                    data: {
+                        title: title,
+                        details: details,
+                        techTag: techTag,
+                        priority: priority,
+                        deadline: deadline,
+                        status: status
+                    },
+                    success: function (response){
+                        console.log(response);
+                        $('#title').val("");
+                        $('#details').val("");
+                        $('#techTag').val("");
+                        $('#priority').val("0");
+                        $('#deadline').val("");
+                        $('#status').val("0");
+
+                        $('#title, #details, #techTag, #priority, #deadline, #status').removeClass('border-success border-danger');
+
+                        $('#toastBody').text("✅ Task added successfully!");
+
+                        $('#successToast')
+                            .removeClass('text-bg-danger')
+                            .addClass('text-bg-success');
+
+                        const toastElement = document.getElementById('successToast');
+                        const toast = new bootstrap.Toast(toastElement);
+                        toast.show();
+
+                        $('#addTask').show();
+                        $('#taskInfo').hide();
+                         loadTasks();
+                    },
+                    error: function (xhr, status, error){
+                        $('#toastBody').text("❌ Something went wrong!");
+
+                        $('#successToast')
+                            .addClass('text-bg-danger')
+                            .removeClass('text-bg-success');
+
+                        const toastElement = document.getElementById('successToast');
+                        const toast = new bootstrap.Toast(toastElement);
+                        toast.show();
+                    }
+                });
+            });
+
+            $('#closeTask').click(function(){
+                $('#addTask').show();
+                $('#taskInfo').hide();
+            });
+
+        });
+    </script>
+}
+
