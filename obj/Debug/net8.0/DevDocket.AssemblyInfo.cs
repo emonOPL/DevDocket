@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DevDocket")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e5b29424bbc162568e39870a23a21d4a8be76acc")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5cb524b4d8548c59de3d039cfaf1ea0818675b14")]
 [assembly: System.Reflection.AssemblyProductAttribute("DevDocket")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DevDocket")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

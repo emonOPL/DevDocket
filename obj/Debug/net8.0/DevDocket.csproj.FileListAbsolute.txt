@@ -25,7 +25,6 @@ E:\Visual Studio\DevDocket\DevDocket\obj\Debug\net8.0\staticwebassets.build.json
 E:\Visual Studio\DevDocket\DevDocket\obj\Debug\net8.0\staticwebassets.build.json.cache
 E:\Visual Studio\DevDocket\DevDocket\obj\Debug\net8.0\staticwebassets.development.json
 E:\Visual Studio\DevDocket\DevDocket\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-E:\Visual Studio\DevDocket\DevDocket\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 E:\Visual Studio\DevDocket\DevDocket\obj\Debug\net8.0\DevDocket.dll
 E:\Visual Studio\DevDocket\DevDocket\obj\Debug\net8.0\refint\DevDocket.dll
 E:\Visual Studio\DevDocket\DevDocket\obj\Debug\net8.0\DevDocket.pdb
@@ -176,3 +175,4 @@ E:\Visual Studio\DevDocket\DevDocket\bin\Debug\net8.0\runtimes\win\lib\net6.0\Sy
 E:\Visual Studio\DevDocket\DevDocket\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 E:\Visual Studio\DevDocket\DevDocket\bin\Debug\net8.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
 E:\Visual Studio\DevDocket\DevDocket\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+E:\Visual Studio\DevDocket\DevDocket\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
